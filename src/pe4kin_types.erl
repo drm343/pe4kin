@@ -10,6 +10,7 @@
 -export([update_type/1, message_type/1, message_command/2]).
 
 -export([command_get_args/3]).
+-export([is_bot_command/1]).
 
 
 %% @doc Detect incoming update type
@@ -63,6 +64,13 @@ message_type(#{<<"message_id">> := _, <<"migrate_to_chat_id">> := _}) -> migrate
 message_type(#{<<"message_id">> := _, <<"migrate_from_chat_id">> := _}) -> migrate_from_chat_id;
 message_type(#{<<"message_id">> := _, <<"pinned_message">> := _}) -> pinned_message;
 message_type(#{<<"message_id">> := _}) -> undefined.
+
+
+%% @doc Check message type for bot command
+is_bot_command(#{<<"entities">> := Entities}) ->
+    length(entities_filter_type(<<"bot_command">>, Entities)) >= 1;
+is_bot_command(_) ->
+    false.
 
 
 entities_filter_type(Type, Entities) ->
